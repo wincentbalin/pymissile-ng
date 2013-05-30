@@ -22,20 +22,20 @@ Install
 
 3. install pyusb-0.3.1 (available [here](http://libusb.sourceforge.net/) or archived [here](http://pymissile.googlecode.com/svn/trunk/pyusb-0.3.1.tar.gz)) but patched (see below):
 
-    `$ wget http://pymissile.googlecode.com/svn/trunk/pyusb-0.3.1.tar.gz`
-    `$ tar zxvf pyusb-0.3.1.tar.gz`
-    `$ cd pyusb-0.3.1`
-    `$ wget http://pymissile.googlecode.com/svn/trunk/pyusb-0.3.1-kernel-detach.patch`
-    `$ patch -p1 < pyusb-0.3.1-kernel-detach.patch`
-    `$ sudo python setup.py install`
+```$ wget http://pymissile.googlecode.com/svn/trunk/pyusb-0.3.1.tar.gz
+   $ tar zxvf pyusb-0.3.1.tar.gz
+   $ cd pyusb-0.3.1
+   $ wget http://pymissile.googlecode.com/svn/trunk/pyusb-0.3.1-kernel-detach.patch
+   $ patch -p1 < pyusb-0.3.1-kernel-detach.patch
+    $ sudo python setup.py install```
 
 4. install urwid-0.8.10 (available [here](http://excess.org/urwid/))
 5. plug in Missile Launcher
 6. run missile.py as root (maybe non-root will work if you mess with libusb, let me know the details if that's the case)
 
-    `$ wget http://pymissile.googlecode.com/svn/trunk/missile.py` 
-    `$ chmod +x ./missile.py`
-    `$ sudo ./missile.py`
+```$ wget http://pymissile.googlecode.com/svn/trunk/missile.py
+    $ chmod +x ./missile.py
+    $ sudo ./missile.py```
     
 Usage
 -----
