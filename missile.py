@@ -2,6 +2,7 @@
 #
 #  Written by: Scott Weston <scott@weston.id.au>
 #  Edited  by: Zakaria ElQotbi <zakaria@elqotbi.com>
+#  Edited  by: Raymond Vermaas <info@momentofgeekiness.com>
 #
 # - Version --------------------------------------------------------------
 #
@@ -297,24 +298,17 @@ class MissileDisplay:
 class MissileNetwork:
 
   def main(self):
-    host = "localhost"
+    host = "0.0.0.0"
     port = 20000
     buf  = 1024
     addr = (host,port)
 
-    md = []
-    lt = 0
-    mc = 0
-    af = 0
-    lpid = 1
-
-    for missiles in range(10):
-      try:
-        md.append(MissileDevice(missiles))
-      except NoMissilesError, e:
-        break
-    if missiles==0:
-      raise NoMissilesError
+    try:
+        usbdevice = UsbDevice()
+        MissileDevice = usbdevice.probe()
+        m = MissileDevice(usbdevice)
+    except NoMissilesError, e:
+        raise NoMissilesError
 
     UDPSock = socket(AF_INET,SOCK_DGRAM)
     UDPSock.bind(addr)
@@ -322,80 +316,43 @@ class MissileNetwork:
     while 1:
       cmd,addr = UDPSock.recvfrom(buf)
       cmd = cmd.strip()
-
-      spa = re.split(r':', cmd)
-      k = spa[0]
-      ppid = spa[1]
+      k = cmd
 
       if not k:
         continue
-      else:
-        if k == "s":
-          if ppid != lpid:
-            print "Received a STOP for order %s but last order was %s, ignored" % (ppid, lpid)
-            continue
 
-        if abs(time()-lt) < 60:
-          mc = mc + 1
-        else:
-          mc = 0
-          af = 0
-# you can make it noisey here if you wanted to
-#         os.system("aplay sounds/firstwarning.wav &")
+      print "Received via network at %2.2f command %s " % (time(), k)
 
-        if mc > 60 and af == 0:
-          k = "v"
-# you can make it noisey here if you wanted to
-#         os.system("aplay sounds/secondwarning.wav &")
-
-        print "Received via network at %2.2f command %s/%s (move count: %d, %d)" % (time(), k, ppid, mc, af)
-
-        lt = time()
-        lpid = ppid
-
-        if k in ('w', 'up'):
-          for m in md:
-            m.move(MissileDevice.UP)
-        elif k in ('x', 'down'):
-          for m in md:
-            m.move(MissileDevice.DOWN)
-        elif k in ('a', 'left'):
-          for m in md:
-            m.move(MissileDevice.LEFT)
-        elif k in ('d', 'right'):
-          for m in md:
-            m.move(MissileDevice.RIGHT)
-        elif k in ('f', 'space'):
-          for m in md:
+      if k in ('w', 'up'):
+         m.move(MissileDevice.UP)
+      elif k in ('x', 'down'):
+         m.move(MissileDevice.DOWN)
+      elif k in ('a', 'left'):
+        m.move(MissileDevice.LEFT)
+      elif k in ('d', 'right'):
+        m.move(MissileDevice.RIGHT)
+      elif k in ('f', 'space'):
+        m.move(MissileDevice.FIRE)
+      elif k in ('s', 'S'):
+        m.move(MissileDevice.STOP)
+      elif k in ('q'):
+        m.move(MissileDevice.LEFTUP)
+      elif k in ('e'):
+        m.move(MissileDevice.RIGHTUP)
+      elif k in ('z'):
+        m.move(MissileDevice.LEFTDOWN)
+      elif k in ('c'):
+        m.move(MissileDevice.RIGHTDOWN)
+      elif k in ('r'):
+        for n in range(3):
+          m.move(MissileDevice.FIRE)
+          sleep(0.5)
+      elif k in ('v'):
+        if random.random() > 0.9:
             m.move(MissileDevice.FIRE)
-        elif k in ('s', 'S'):
-          for m in md:
-            m.move(MissileDevice.STOP)
-        elif k in ('q'):
-          for m in md:
-            m.move(MissileDevice.LEFTUP)
-        elif k in ('e'):
-          for m in md:
-            m.move(MissileDevice.RIGHTUP)
-        elif k in ('z'):
-          for m in md:
-            m.move(MissileDevice.LEFTDOWN)
-        elif k in ('c'):
-          for m in md:
-            m.move(MissileDevice.RIGHTDOWN)
-        elif k in ('r'):
-          for n in range(3):
-            for m in md:
-              m.move(MissileDevice.FIRE)
-              sleep(0.5)
-        elif k in ('v'):
-          for m in md:
-            if random.random() > 0.9:
-              m.move(MissileDevice.FIRE)
-              af = 1
-        elif k in ('esc'):
-          UDPSock.close()
-          return
+      elif k in ('esc'):
+        UDPSock.close()
+        return
 
 def usage():
   print "Usage:"
@@ -449,4 +406,3 @@ def main(argv):
 
 if __name__=="__main__":
   main(sys.argv[1:])
-
