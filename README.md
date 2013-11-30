@@ -1,4 +1,3 @@
-
 ***
 _This is a fork of pymissile project: http://code.google.com/p/pymissile/
 that add support of center missile device (0416:9391) from Winbond Electronics_
@@ -41,7 +40,7 @@ $ sudo python setup.py install
 6. run missile.py as root (maybe non-root will work if you mess with libusb, let me know the details if that's the case)
 
 ```
-$ wget http://pymissile.googlecode.com/svn/trunk/missile.py
+$ wget https://raw.github.com/momentofgeekiness/pymissile-ng/master/missile.py
 
 $ chmod +x ./missile.py
 
