@@ -32,7 +32,7 @@ sudo apt-get install python3-usb python3-urwid
 4. Run `missile.py` as `root` (maybe non-root will work if you mess with libusb, let me know the details if that's the case)
 
 ```bash
-wget https://raw.github.com/momentofgeekiness/pymissile-ng/master/missile.py
+wget https://raw.github.com/wincentbalin/pymissile-ng/master/missile.py
 chmod +x ./missile.py
 sudo ./missile.py
 ```
