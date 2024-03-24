@@ -43,7 +43,7 @@ import usb
 import urwid
 import urwid.curses_display
 import sys
-import getopt
+import argparse
 import random
 from time import sleep, time
 from socket import *
@@ -351,55 +351,28 @@ class MissileNetwork:
         UDPSock.close()
         return
 
-def usage():
-  print("Usage:")
-  print("  -h | --help : this help")
-  print("  -n | --network: simple network listener mode (Read the source Luke!)")
-  print("  -c | --console: read command directly from console (dont use urwid interface)")
-  print("  -v | --version: version")
-  sys.exit(2)
-
 def version():
   print("$Id: missile.py,v 1.13 2006/07/25 17:01:24 scott Exp $")
   sys.exit(0)
 
-def main(argv):
-  try:
-    opts, args = getopt.getopt(argv, "hvnc", ["help", "version", "network", "console"])
-  except getopt.GetoptError:
-    print("Sorry, bad option.")
-    usage()
+def main():
+  parser = argparse.ArgumentParser()
+  parser.add_argument('--version', '-v', action='store_true', help='Show version and exit')
+  parser.add_argument('--network', '-n', action='store_true', help='Simple network listener mode (Read the source Luke!)')
+  parser.add_argument('--console', '-c', action='store_true', help='Read command directly from console (dont use urwid interface)')
+  args = parser.parse_args()
 
-  if opts:
-    for o, a in opts:
-      if o in ("-h", "--help"):
-        usage()
-      elif o in ("-v", "--version"):
-        version()
-      elif o in ("-n", "--network"):
-        try:
-          MissileNetwork().main()
-        except NoMissilesError:
-          print("No WMDs found.")
-          return
-      elif o in ("-c", "--console"):
-        try:
-          MissileNoDisplay().run()
-        except NoMissilesError:
-          print("No WMDs found.")
-          return
-      else:
-        try:
-          MissileDisplay().main()
-        except NoMissilesError:
-          print("No WMDs found.")
-          return
-  else:
-    try:
-      MissileDisplay().main()
-    except NoMissilesError:
-      print("No WMDs found.")
-      return
+  try:
+    if args.version:
+       version()
+    elif args.network:
+       MissileNetwork().main()
+    elif args.console:
+       MissileNoDisplay().run()
+    else:
+       MissileDisplay().main()
+  except NoMissilesError:
+     print("No WMDs found.")
 
 if __name__=="__main__":
-  main(sys.argv[1:])
+  main()
