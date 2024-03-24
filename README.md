@@ -1,50 +1,40 @@
 ***
 _This is a fork of pymissile project: http://code.google.com/p/pymissile/
 that add support of center missile device (0416:9391) from Winbond Electronics_
+
+Now it has been converted to Python 3
 ***
 
 Requirements
 ------------
 
-* python (>=2.3)
-* libusb (>=0.1.8)
-* pyusb (==0.3.1) python module with patch included below
-* urwid python module 
+* Python 3
+* `pyusb` Python module
+* `urwid` Python module
 
 Install
 -------
 
-1. ensure python is installed and right version
-2. install libusb-0.1.18 or better (available [here](http://libusb.sourceforge.net/) or use package appropriate for your distro, e.g. on ubuntu:
+1. Ensure Python is installed and right version
+2. Install Python modules either with
 
-    ```$ sudo apt-get install libusb-dev```
-
-3. install pyusb-0.3.1 (available [here](http://libusb.sourceforge.net/) or archived [here](http://pymissile.googlecode.com/svn/trunk/pyusb-0.3.1.tar.gz)) but patched (see below):
-
-```
-$ wget http://pymissile.googlecode.com/svn/trunk/pyusb-0.3.1.tar.gz
-
-$ tar zxvf pyusb-0.3.1.tar.gz
-
-$ cd pyusb-0.3.1
-
-$ wget http://pymissile.googlecode.com/svn/trunk/pyusb-0.3.1-kernel-detach.patch
-
-$ patch -p1 < pyusb-0.3.1-kernel-detach.patch
-
-$ sudo python setup.py install
+```bash
+pip install -r requirements.txt
 ```
 
-4. install urwid-0.8.10 (available [here](http://excess.org/urwid/))
-5. plug in Missile Launcher
-6. run missile.py as root (maybe non-root will work if you mess with libusb, let me know the details if that's the case)
+or on Raspberry Pi or any Debian-based Linux distribution
 
+```bash
+sudo apt-get install python3-usb python3-urwid
 ```
-$ wget https://raw.github.com/momentofgeekiness/pymissile-ng/master/missile.py
 
-$ chmod +x ./missile.py
+3. Plug in Missile Launcher
+4. Run `missile.py` as `root` (maybe non-root will work if you mess with libusb, let me know the details if that's the case)
 
-$ sudo ./missile.py
+```bash
+wget https://raw.github.com/momentofgeekiness/pymissile-ng/master/missile.py
+chmod +x ./missile.py
+sudo ./missile.py
 ```
     
 Usage
