@@ -40,7 +40,7 @@
 #
 
 import usb
-import exceptions
+#import exceptions
 import urwid
 import urwid.curses_display
 import sys
@@ -72,7 +72,7 @@ class centerMissileDevice:
         self.handle = usbdevice.open()
         self.handle.reset()
         return
-      except NoMissilesError, e:
+      except NoMissilesError:
         raise NoMissilesError()
 
   def move(self, direction):
@@ -105,7 +105,7 @@ class legacyMissileDevice:
     try:
       self.handle = usbdevice.open()
       self.handle.reset()
-    except NoMissilesError, e:
+    except NoMissilesError:
       raise NoMissilesError()
 
   def move(self, direction):
@@ -153,8 +153,8 @@ class UsbDevice:
     try:
       self.handle.detachKernelDriver(0)
       self.handle.detachKernelDriver(1)
-    except usb.USBError, err:
-      print >> sys.stderr, err
+    except usb.USBError as err:
+      print(err, file=sys.stderr)
 
     self.handle.setConfiguration(self.conf)
     self.handle.claimInterface(self.intf)
@@ -167,8 +167,8 @@ class MissileNoDisplay:
         usbdevice = UsbDevice()
         MissileDevice = usbdevice.probe()
         m = MissileDevice(usbdevice)
-    except NoMissilesError, e:
-        raise NoMissilesError
+    except NoMissilesError:
+        raise NoMissilesError()
     while 1:
       keys = None
       while not keys:
@@ -251,8 +251,8 @@ class MissileDisplay:
         usbdevice = UsbDevice()
         MissileDevice = usbdevice.probe()
         m = MissileDevice(usbdevice)
-    except NoMissilesError, e:
-        raise NoMissilesError
+    except NoMissilesError:
+        raise NoMissilesError()
 
     size = self.ui.get_cols_rows()
     while 1:
@@ -307,8 +307,8 @@ class MissileNetwork:
         usbdevice = UsbDevice()
         MissileDevice = usbdevice.probe()
         m = MissileDevice(usbdevice)
-    except NoMissilesError, e:
-        raise NoMissilesError
+    except NoMissilesError:
+        raise NoMissilesError()
 
     UDPSock = socket(AF_INET,SOCK_DGRAM)
     UDPSock.bind(addr)
@@ -321,7 +321,7 @@ class MissileNetwork:
       if not k:
         continue
 
-      print "Received via network at %2.2f command %s " % (time(), k)
+      print("Received via network at {:2.2f} command {} ".format(time(), k))
 
       if k in ('w', 'up'):
          m.move(MissileDevice.UP)
@@ -355,22 +355,22 @@ class MissileNetwork:
         return
 
 def usage():
-  print "Usage:"
-  print "  -h | --help : this help"
-  print "  -n | --network: simple network listener mode (Read the source Luke!)"
-  print "  -c | --console: read command directly from console (dont use urwid interface)"
-  print "  -v | --version: version"
+  print("Usage:")
+  print("  -h | --help : this help")
+  print("  -n | --network: simple network listener mode (Read the source Luke!)")
+  print("  -c | --console: read command directly from console (dont use urwid interface)")
+  print("  -v | --version: version")
   sys.exit(2)
 
 def version():
-  print "$Id: missile.py,v 1.13 2006/07/25 17:01:24 scott Exp $"
+  print("$Id: missile.py,v 1.13 2006/07/25 17:01:24 scott Exp $")
   sys.exit(0)
 
 def main(argv):
   try:
     opts, args = getopt.getopt(argv, "hvnc", ["help", "version", "network", "console"])
   except getopt.GetoptError:
-    print "Sorry, bad option."
+    print("Sorry, bad option.")
     usage()
 
   if opts:
@@ -382,26 +382,26 @@ def main(argv):
       elif o in ("-n", "--network"):
         try:
           MissileNetwork().main()
-        except NoMissilesError, e:
-          print "No WMDs found."
+        except NoMissilesError:
+          print("No WMDs found.")
           return
       elif o in ("-c", "--console"):
         try:
           MissileNoDisplay().run()
-        except NoMissilesError, e:
-          print "No WMDs found."
+        except NoMissilesError:
+          print("No WMDs found.")
           return
       else:
         try:
           MissileDisplay().main()
-        except NoMissilesError, e:
-          print "No WMDs found."
+        except NoMissilesError:
+          print("No WMDs found.")
           return
   else:
     try:
       MissileDisplay().main()
-    except NoMissilesError, e:
-      print "No WMDs found."
+    except NoMissilesError:
+      print("No WMDs found.")
       return
 
 if __name__=="__main__":
