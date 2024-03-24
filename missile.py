@@ -40,14 +40,11 @@
 #
 
 import usb
-#import exceptions
 import urwid
 import urwid.curses_display
 import sys
 import getopt
 import random
-import re
-import os
 from time import sleep, time
 from socket import *
 
